@@ -1,10 +1,15 @@
 import copy
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
+from pathlib import Path
 
 from jsonschema import Draft202012Validator
 
 # from sophios import cli
 from sophios.wic_types import Json
+
+from sophios.api.utils.ict.ict_spec.model import ICT
+from sophios.api.utils.ict.ict_spec.validate import validate
+
 
 SCHEMA: Json = {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -172,6 +177,22 @@ def raw_wfb_to_lean_wfb(inp: Json) -> Json:
 
     validate_schema_and_object(SCHEMA, inp_restrict)
     return inp_restrict
+
+def ict_to_clt(ict: Union[ICT, Path, str, dict], network_access: bool = False) -> dict:
+    """
+    Convert ICT to CWL CommandLineTool
+    
+    Args:
+        ict (Union[ICT, Path, str, dict]): ICT to convert to CLT. ICT can be an ICT object,
+        a path to a yaml file, or a dictionary containing ICT
+
+    Returns:
+        dict: A dictionary containing the CLT
+    """
+    
+    ict_local = ict if isinstance(ict, ICT) else validate(ict)
+
+    return ict_local.to_clt(network_access=network_access)
 
 
 # def wfb_to_wic(request: Json) -> Json:
