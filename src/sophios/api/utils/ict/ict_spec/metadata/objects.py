@@ -17,8 +17,6 @@ from pydantic import (
 )
 from typing_extensions import Annotated
 
-from sophios.api.utils.ict.ict_spec.semver import Version
-
 
 class Author(RootModel):
     """Author object."""
@@ -106,16 +104,9 @@ EntrypointPath = Annotated[Path, WithJsonSchema({"type": "string", "format": "ur
 class Metadata(BaseModel):
     """Metadata BaseModel."""
 
-    specVersion: Version = Field(
-        description="Version of ICT specification yaml schema.", examples=["0.1.0"]
-    )
     name: str = Field(
         description="Unique identifier for ICT tool scoped on organization or user, should take the format <organization/user>/<ICT name>.",
         examples=["wipp/threshold"],
-    )
-    version: Version = Field(
-        description="Version of ICT, semantic versioning is recommended.",
-        examples=["1.1.1"],
     )
     container: str = Field(
         description="Direct link to hosted ICT container image, should take the format <registry path>/<image repository>:<tag>, registry path may be omitted and will default to Docker Hub.",
