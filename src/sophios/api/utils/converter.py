@@ -9,7 +9,7 @@ from sophios.utils_yaml import wic_loader
 from sophios.wic_types import Json, Cwl
 
 from sophios.api.utils.ict.ict_spec.model import ICT
-from sophios.api.utils.ict.ict_spec.validate import validate
+from sophios.api.utils.ict.ict_spec.cast import cast_to_ict
 
 SCHEMA: Json = {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -257,6 +257,6 @@ def ict_to_clt(ict: Union[ICT, Path, str, dict], network_access: bool = False) -
         dict: A dictionary containing the CLT
     """
     
-    ict_local = ict if isinstance(ict, ICT) else validate(ict)
+    ict_local = ict if isinstance(ict, ICT) else cast_to_ict(ict)
 
     return ict_local.to_clt(network_access=network_access)
