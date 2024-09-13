@@ -1,28 +1,50 @@
-import unittest
-from json import dumps
+import pytest
+import json
+import pathlib
 
 from sophios.api.utils.converter import ict_to_clt
 
-from tests.data.label_to_vector import label_to_vector_ict, label_to_vector_clt
-from tests.data.ome_conversion import ome_conversion_ict, ome_conversion_clt
-from tests.data.czi_extract import czi_extract_ict, czi_extract_clt
+@pytest.mark.fast
+def test_ict_to_clt_label_to_vector_conversion():
 
-class IctToClt(unittest.TestCase):
+    path = pathlib.Path(__file__).parent.resolve()
 
-    def test_label_to_vector_conversion(self):
+    with open(path / "data/ict_data/label_to_vector/label_to_vector_ict.json", 'r') as file:
+        label_to_vector_ict = json.load(file)
 
-        result = ict_to_clt(label_to_vector_ict)
+    with open(path / "data/ict_data/label_to_vector/label_to_vector_clt.json", 'r') as file:
+        label_to_vector_clt = json.load(file)
 
-        self.assertDictEqual(result, label_to_vector_clt)
+    result = ict_to_clt(label_to_vector_ict)
 
-    def test_ome_conversion(self):
+    assert result == label_to_vector_clt
 
-        result = ict_to_clt(ome_conversion_ict)
+@pytest.mark.fast
+def test_ict_to_clt_ome_conversion():
 
-        self.assertDictEqual(result, ome_conversion_clt)
+    path = pathlib.Path(__file__).parent.resolve()
 
-    def test_czi_extract_conversion(self):
+    with open(path / "data/ict_data/ome_conversion/ome_conversion_ict.json", 'r') as file:
+        ome_conversion_ict = json.load(file)
 
-        result = ict_to_clt(czi_extract_ict)
+    with open(path / "data/ict_data/ome_conversion/ome_conversion_clt.json", 'r') as file:
+        ome_conversion_clt = json.load(file)
 
-        self.assertDictEqual(result, czi_extract_clt)
+    result = ict_to_clt(ome_conversion_ict)
+
+    assert result == ome_conversion_clt
+
+@pytest.mark.fast
+def test_ict_to_clt_czi_extract_conversion():
+
+    path = pathlib.Path(__file__).parent.resolve()
+
+    with open(path / "data/ict_data/czi_extract/czi_extract_ict.json", 'r') as file:
+        czi_extract_ict = json.load(file)
+
+    with open(path / "data/ict_data/czi_extract/czi_extract_clt.json", 'r') as file:
+        czi_extract_clt = json.load(file)
+
+    result = ict_to_clt(czi_extract_ict)
+
+    assert result == czi_extract_clt
