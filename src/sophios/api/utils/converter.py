@@ -245,10 +245,11 @@ def wfb_to_wic(inp: Json) -> Cwl:
         workflow_temp = node["cwlScript"]
     return workflow_temp
 
+
 def ict_to_clt(ict: Union[ICT, Path, str, dict], network_access: bool = False) -> dict:
     """
     Convert ICT to CWL CommandLineTool
-    
+
     Args:
         ict (Union[ICT, Path, str, dict]): ICT to convert to CLT. ICT can be an ICT object,
         a path to a yaml file, or a dictionary containing ICT
@@ -256,7 +257,7 @@ def ict_to_clt(ict: Union[ICT, Path, str, dict], network_access: bool = False) -
     Returns:
         dict: A dictionary containing the CLT
     """
-    
+
     ict_local = ict if isinstance(ict, ICT) else cast_to_ict(ict)
 
     return ict_local.to_clt(network_access=network_access)
