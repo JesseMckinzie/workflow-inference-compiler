@@ -8,7 +8,7 @@ from yaml import safe_load
 from sophios.api.utils.ict.ict_spec.model import ICT
 
 
-def cast_to_ict(ict: Union[Path, str, dict]):
+def cast_to_ict(ict: Union[Path, str, dict]) -> ICT:
 
     if isinstance(ict, str):
         ict = Path(ict)
@@ -22,7 +22,7 @@ def cast_to_ict(ict: Union[Path, str, dict]):
                 data = json.load(f_o)
         else:
             raise ValueError(f"File extension not supported: {ict}")
-    
+
         return ICT(**data)
-    
+
     return ICT(**ict)

@@ -1,6 +1,6 @@
 # pylint: disable=no-member
 """Hardware Requirements for ICT."""
-from typing import Annotated, Optional, Union
+from typing import Annotated, Optional, Union, Any
 
 from pydantic import BaseModel, BeforeValidator, Field
 
@@ -101,7 +101,7 @@ class HardwareRequirements(BaseModel):
     memory: Optional[Memory] = Field(None, description="Memory requirements.")
     gpu: Optional[GPU] = Field(None, description="GPU requirements.")
 
-    def __getattribute__(self, name: str) -> Union[CPU, Memory, GPU]:
+    def __getattribute__(self, name: str) -> Any:
         """Get attribute."""
         if name in ATTRIBUTES:
             return super().__getattribute__(name.split("_")[0]).__getattribute__(name)

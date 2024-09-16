@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 from typing import Optional, TypeVar
 
-import yaml  # type: ignore
+import yaml
 from pydantic import model_validator
 
 from sophios.api.utils.ict.ict_spec.hardware import HardwareRequirements
@@ -67,7 +67,7 @@ class ICT(Metadata):
     def clt(self) -> dict:
         """CWL CommandLineTool from an ICT object."""
         return clt_dict(self, network_access=False)
-    
+
     @property
     def ict(self) -> dict:
         """ICT yaml from an ICT object."""

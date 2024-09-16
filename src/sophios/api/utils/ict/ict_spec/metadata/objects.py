@@ -25,7 +25,7 @@ class Author(RootModel):
 
     @field_validator("root")
     @classmethod
-    def check_author(cls, value):
+    def check_author(cls: Any, value: Any) -> Any:
         """Check the author follows the correct format."""
         if not len(value.split(" ")) == 2:
             raise ValueError(
@@ -33,28 +33,28 @@ class Author(RootModel):
             )
         return value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Repr."""
         return self.root
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Str."""
         return self.root
 
     @singledispatchmethod
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: Any) -> bool:  # type: ignore
         """Compare if two Author objects are equal."""
         msg = "invalid type for comparison."
         raise TypeError(msg)
 
 
-@Author.__eq__.register(str)  # pylint: disable=no-member
-def _(self, other):
+@Author.__eq__.register(str)  # type: ignore # pylint: disable=no-member
+def _(self: Author, other: Author) -> Any:
     return self.root == other
 
 
-@Author.__eq__.register(Author)  # pylint: disable=no-member
-def _(self, other):
+@Author.__eq__.register(Author)  # type: ignore # pylint: disable=no-member
+def _(self: Author, other: Author) -> Any:
     return self.root == other.root
 
 
@@ -65,7 +65,7 @@ class DOI(RootModel):
 
     @field_validator("root")
     @classmethod
-    def check_doi(cls, value):
+    def check_doi(cls: Any, value: Any) -> Any:
         """Check the doi follows the correct format."""
         if not value.startswith("10."):
             raise ValueError("The DOI must start with 10.")
@@ -73,27 +73,27 @@ class DOI(RootModel):
             raise ValueError("The DOI must be in the format <prefix>/<suffix>")
         return value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Repr."""
         return self.root
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Str."""
         return self.root
 
     @singledispatchmethod
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: Any) -> bool:  # type: ignore
         """Compare if two DOI objects are equal."""
         msg = "invalid type for comparison."
         raise TypeError(msg)
 
 
-@DOI.__eq__.register(str)  # pylint: disable=no-member
+@DOI.__eq__.register(str)  # type: ignore  # pylint: disable=no-member
 def _(self, other):
     return self.root == other
 
 
-@DOI.__eq__.register(DOI)  # pylint: disable=no-member
+@DOI.__eq__.register(DOI)  # type: ignore  # pylint: disable=no-member
 def _(self, other):
     return self.root == other.root
 
@@ -148,7 +148,7 @@ class Metadata(BaseModel):
 
     @field_validator("name")
     @classmethod
-    def check_name(cls, value):
+    def check_name(cls: Any, value: Any) -> Any:
         """Check the name follows the correct format."""
         if not len(value.split("/")) in [2, 3]:
             raise ValueError(
@@ -158,7 +158,7 @@ class Metadata(BaseModel):
 
     @field_validator("container")
     @classmethod
-    def check_container(cls, value):
+    def check_container(cls: Any, value: Any) -> Any:
         """Check the container follows the correct format."""
         if not bool(
             re.match(r"^[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+:[a-zA-Z0-9_\.\-]+$", value)
@@ -169,7 +169,7 @@ class Metadata(BaseModel):
         return value
 
     @model_validator(mode="after")
-    def default_title(self):
+    def default_title(self) -> Any:
         """Set the title to the name if not provided."""
         if self.title is None:
             self.title = self.name

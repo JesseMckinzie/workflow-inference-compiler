@@ -2,7 +2,7 @@
 
 import enum
 import re
-from typing import Annotated, Literal, Optional, Union
+from typing import Annotated, Literal, Optional, Union, Any
 
 from pydantic import BaseModel, Field, RootModel, field_validator
 
@@ -14,7 +14,7 @@ class UIKey(RootModel):
 
     @field_validator("root")
     @classmethod
-    def check_ui_key(cls, value):
+    def check_ui_key(cls: Any, value: str) -> str:
         """Check the UI key follows the correct format."""
         sp_ = value.split(".")  # ruff: noqa: PLR2004
         if not len(sp_) == 2:
@@ -27,7 +27,7 @@ class UIKey(RootModel):
             )
         return value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Repr."""
         return f"'{self.root}'"
 
@@ -53,7 +53,7 @@ class ConditionalStatement(RootModel):
 
     @field_validator("root")
     @classmethod
-    def check_conditional_statement(cls, value):
+    def check_conditional_statement(cls: Any, value: str) -> str:
         """Check the conditional statement follows the correct format."""
         if not bool(
             re.match(r"^(inputs|outputs)\.\w+(==|!=|<|>|<=|>=|&&)'?\w+'?$", value)
@@ -63,7 +63,7 @@ class ConditionalStatement(RootModel):
             )
         return value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Repr."""
         return f"'{self.root}'"
 

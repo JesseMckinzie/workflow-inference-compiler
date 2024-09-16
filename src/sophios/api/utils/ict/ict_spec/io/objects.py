@@ -6,8 +6,7 @@ from typing import Optional, Union, Any
 
 from pydantic import BaseModel, Field
 
-# dict used to map an ICT I/O
-# type to a CWL I/O type
+
 CWL_IO_DICT: dict[str, str] = {
     "string": "string",
     "number": "double",
@@ -77,7 +76,7 @@ class IO(BaseModel):
     )  # TODO ontology
 
     @property
-    def _is_optional(self):
+    def _is_optional(self) -> str:
         """Return '' if required, '?' if default exists, else '?'."""
         if self.defaultValue != None:
             return "?"
@@ -85,45 +84,57 @@ class IO(BaseModel):
             return ""
         else:
             return "?"
-        
-    def convert_uri_format(self, uri_format):
+
+    def convert_uri_format(self, uri_format: Any) -> str:
         """Convert to cwl format
         Args:
             format (_type_): _description_
         """
         return f"edam:format_{uri_format.split('_')[-1]}"
 
-    def _input_to_cwl(self):
+    def _input_to_cwl(self) -> dict:
         """Convert inputs to CWL."""
         cwl_dict_ = {
             "inputBinding": {"prefix": f"--{self.name}"},
             # "type": f"{_get_cwl_type(self.name, self.io_type)}{self._is_optional}",
             "type": f"{_get_cwl_type(self.io_type)}{self._is_optional}",
         }
-        
-        if isinstance(self.io_format, dict) and self.io_format.get('uri', None) is not None:
-            cwl_dict_['format'] = self.convert_uri_format(self.io_format['uri'])
+
+        if (
+            isinstance(self.io_format, dict)
+            and self.io_format.get("uri", None) is not None
+        ):
+            cwl_dict_["format"] = self.convert_uri_format(self.io_format["uri"])
         if self.defaultValue is not None:
             cwl_dict_["default"] = self.defaultValue
         return cwl_dict_
 
-    def _output_to_cwl(self, inputs):
+    def _output_to_cwl(self, inputs: Any) -> dict:
         """Convert outputs to CWL."""
         if self.io_type == "path":
             if self.name in inputs:
-                if not isinstance(self.io_format, list) and self.io_format['term'].lower()=='directory':
+                if (
+                    not isinstance(self.io_format, list)
+                    and self.io_format["term"].lower() == "directory"
+                ):
                     cwl_type = "Directory"
-                elif not isinstance(self.io_format, list) and self.io_format['term'].lower()=='file':
+                elif (
+                    not isinstance(self.io_format, list)
+                    and self.io_format["term"].lower() == "file"
+                ):
                     cwl_type = "File"
                 else:
-                    cwl_type  = "File"
+                    cwl_type = "File"
 
                 cwl_dict_ = {
                     "outputBinding": {"glob": f"$(inputs.{self.name}.basename)"},
                     "type": cwl_type,
                 }
-                if not isinstance(self.io_format, list) and self.io_format.get('uri', None) is not None:
-                    cwl_dict_['format'] = self.convert_uri_format(self.io_format['uri'])
+                if (
+                    not isinstance(self.io_format, list)
+                    and self.io_format.get("uri", None) is not None
+                ):
+                    cwl_dict_["format"] = self.convert_uri_format(self.io_format["uri"])
                 return cwl_dict_
             else:
                 raise ValueError(f"Output {self.name} not found in inputs")
