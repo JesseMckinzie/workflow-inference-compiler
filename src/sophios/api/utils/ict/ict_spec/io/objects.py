@@ -1,7 +1,6 @@
 """IO objects for ICT."""
 
 import enum
-import re
 from typing import Optional, Union, Any
 
 from pydantic import BaseModel, Field
@@ -44,7 +43,10 @@ class IO(BaseModel):
     """IO BaseModel."""
 
     name: str = Field(
-        description="Unique input or output name for this plugin, case-sensitive match to corresponding variable expected by tool.",
+        description=(
+            "Unique input or output name for this plugin, case-sensitive match to"
+            "corresponding variable expected by tool."
+        ),
         examples=["thresholdtype"],
     )
     io_type: TypesEnum = Field(
@@ -78,12 +80,12 @@ class IO(BaseModel):
     @property
     def _is_optional(self) -> str:
         """Return '' if required, '?' if default exists, else '?'."""
-        if self.defaultValue != None:
+        if self.defaultValue is not None:
             return "?"
-        elif self.required:
+        if self.required:
             return ""
-        else:
-            return "?"
+
+        return "?"
 
     def convert_uri_format(self, uri_format: Any) -> str:
         """Convert to cwl format
@@ -102,8 +104,9 @@ class IO(BaseModel):
 
         if (
             isinstance(self.io_format, dict)
-            and self.io_format.get("uri", None) is not None
+            and self.io_format.get("uri", None) is not None  # pylint: disable=no-member
         ):
+            # pylint: disable-next=unsubscriptable-object
             cwl_dict_["format"] = self.convert_uri_format(self.io_format["uri"])
         if self.defaultValue is not None:
             cwl_dict_["default"] = self.defaultValue
@@ -115,12 +118,14 @@ class IO(BaseModel):
             if self.name in inputs:
                 if (
                     not isinstance(self.io_format, list)
-                    and self.io_format["term"].lower() == "directory"
+                    and self.io_format["term"].lower()
+                    == "directory"  # pylint: disable=unsubscriptable-object
                 ):
                     cwl_type = "Directory"
                 elif (
                     not isinstance(self.io_format, list)
-                    and self.io_format["term"].lower() == "file"
+                    and self.io_format["term"].lower()
+                    == "file"  # pylint: disable=unsubscriptable-object
                 ):
                     cwl_type = "File"
                 else:
@@ -132,10 +137,12 @@ class IO(BaseModel):
                 }
                 if (
                     not isinstance(self.io_format, list)
-                    and self.io_format.get("uri", None) is not None
+                    and self.io_format.get("uri", None)
+                    is not None  # pylint: disable=no-member
                 ):
+                    # pylint: disable-next=unsubscriptable-object
                     cwl_dict_["format"] = self.convert_uri_format(self.io_format["uri"])
                 return cwl_dict_
-            else:
-                raise ValueError(f"Output {self.name} not found in inputs")
+
+            raise ValueError(f"Output {self.name} not found in inputs")
         raise NotImplementedError(f"Output not supported {self.name}")

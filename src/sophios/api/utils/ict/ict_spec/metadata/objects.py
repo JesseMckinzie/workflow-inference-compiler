@@ -105,11 +105,18 @@ class Metadata(BaseModel):
     """Metadata BaseModel."""
 
     name: str = Field(
-        description="Unique identifier for ICT tool scoped on organization or user, should take the format <organization/user>/<ICT name>.",
+        description=(
+            "Unique identifier for ICT tool scoped on organization or user,"
+            "should take the format <organization/user>/<ICT name>."
+        ),
         examples=["wipp/threshold"],
     )
     container: str = Field(
-        description="Direct link to hosted ICT container image, should take the format <registry path>/<image repository>:<tag>, registry path may be omitted and will default to Docker Hub.",
+        description=(
+            "Direct link to hosted ICT container image, should take the format"
+            "<registry path>/<image repository>:<tag>, registry path may be omitted"
+            "and will default to Docker Hub."
+        ),
         examples=["wipp/threshold:1.1.1"],
     )
     entrypoint: Union[EntrypointPath, str] = Field(
@@ -126,7 +133,10 @@ class Metadata(BaseModel):
         examples=["Thresholding methods from ImageJ"],
     )
     author: list[Author] = Field(
-        description="Comma separated list of authors, each author name should take the format <first name> <last name>.",
+        description=(
+            "Comma separated list of authors, each author name should take the format"
+            "<first name> <last name>."
+        ),
         examples=["Mohammed Ouladi"],
     )
     contact: Union[EmailStr, AnyHttpUrl] = Field(

@@ -1,5 +1,4 @@
 import json
-from functools import singledispatch
 from pathlib import Path
 from typing import Union
 
